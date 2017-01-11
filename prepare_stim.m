@@ -37,27 +37,41 @@ if InputDatastruct.isbinocular==1
 InputDatastruct.stimlistL=stimlistL;
 
 % randomise
-sorted_listL = sortrows(stimlistL,6);
-sorted_listR = sortrows(stimlistR,6);
+sorted_listL = sortrows(stimlistL,7);
+stimlistL=sorted_listL;
+
 % Assign the stimlists for each block.
-stimlistL = sorted_listL(1:162,:);
-stimlistR = sorted_listR(1:162,:);
+
 
 
 InputDatastruct.BINOC.stimlistL=stimlistL;
-InputDatastruct.BINOC.stimlistR=stimlistR;
 
-InputDatastruct.BINOC.objnumberL = InputDatastruct.BINOC.stimlistL(:,1);
-InputDatastruct.BINOC.objnameL = InputDatastruct.BINOC.stimlistL(:,2);
-InputDatastruct.BINOC.objGlossLevelL = InputDatastruct.BINOC.stimlistL(:,3);
-InputDatastruct.BINOC.objBumpLevelL = InputDatastruct.BINOC.stimlistL(:,4);
-InputDatastruct.BINOC.objSceneL = InputDatastruct.BINOC.stimlistL(:,5);
 
-InputDatastruct.BINOC.objnumberR = InputDatastruct.BINOC.stimlistR(:,1);
-InputDatastruct.BINOC.objnameR = InputDatastruct.BINOC.stimlistR(:,2);
-InputDatastruct.BINOC.objGlossLevelR = InputDatastruct.BINOC.stimlistR(:,3);
-InputDatastruct.BINOC.objBumpLevelR = InputDatastruct.BINOC.stimlistR(:,4);
-InputDatastruct.BINOC.objSceneR = InputDatastruct.BINOC.stimlistR(:,5);
+InputDatastruct.BINOC.objnumber = InputDatastruct.BINOC.stimlistL(:,1);
+InputDatastruct.BINOC.objname = InputDatastruct.BINOC.stimlistL(:,2);
+InputDatastruct.BINOC.objGlossLevel = InputDatastruct.BINOC.stimlistL(:,3);
+InputDatastruct.BINOC.objBumpLevel = InputDatastruct.BINOC.stimlistL(:,4);
+InputDatastruct.BINOC.objScene = InputDatastruct.BINOC.stimlistL(:,5);
+InputDatastruct.BINOC.stereo = InputDatastruct.BINOC.stimlistL(:,6);
+
+ntrials=length(InputDatastruct.BINOC.objnumberL);   
+
+
+  if InputDatastruct.isfixed==1
+        randomorder=1:ntrials;
+    else
+    randomorder=randperm(ntrials);  
+    end
+    
+%     Randomise each list (not really sure why you have to do this since the trials are already randomized, but it
+%     was in the last version).
+    InputDatastruct.BINOC.randomorder=randomorder;
+    InputDatastruct.BINOC.objnumber=InputDatastruct.BINOC.objnumber(randomorder);  
+    InputDatastruct.BINOC.objname=InputDatastruct.BINOC.objname(randomorder);      
+    InputDatastruct.BINOC.objGlossLevel=InputDatastruct.BINOC.objGlossLevel(randomorder);
+    InputDatastruct.BINOC.objBumpLevel = InputDatastruct.BINOC.objBumpLevel(randomorder);
+    InputDatastruct.BINOC.objScene = InputDatastruct.BINOC.objScene(randomorder);
+    InputDatastruct.BINOC.stereo = InputDatastruct.BINOC.objScene(randomorder);
 
 
 
