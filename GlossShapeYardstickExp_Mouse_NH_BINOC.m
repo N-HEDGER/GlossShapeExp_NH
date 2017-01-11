@@ -76,8 +76,8 @@ try
     screenNumber = max(screens);
     
     
-    IM_WIDTH_DISP=505;
-    IM_HEIGHT_DISP=505;
+    IM_WIDTH_DISP=540;
+    IM_HEIGHT_DISP=540;
     noisesize=100;
     noise = 255*rand([IM_HEIGHT_DISP+noisesize IM_WIDTH_DISP+noisesize]);
     

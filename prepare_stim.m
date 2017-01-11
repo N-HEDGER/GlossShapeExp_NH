@@ -39,9 +39,13 @@ if InputDatastruct.isbinocular==1
 InputDatastruct.stimlistL=stimlistL;
 
 % randomise
+
+if InputDatastruct.isfixed==0
 sorted_listL = sortrows(stimlistL,8);
 stimlistL=sorted_listL;
-
+else
+    stimlistL=stimlistL;
+end
 % Assign the stimlists for each block.
 
 
@@ -122,7 +126,13 @@ end
 InputDatastruct.stimlist=stimlist;
 
 % randomise
-sorted_list = sortrows(stimlist,6);
+
+    if InputDatastruct.isfixed==1
+    sorted_list=stimlist;
+    else
+    sorted_list = sortrows(stimlist,6);
+    end
+
 
 % Assign the stimlists for each block.
 stimlist1 = sorted_list(1:81,:);
