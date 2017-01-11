@@ -16,8 +16,8 @@ if InputDatastruct.isbinocular==1
                 
                 for stereo=1:3
                     for eye=1
-                stimfilenameL = strcat('Tone_Mapped_SOU/Mesh',Stereolist(stereo),eyelist(eye),'D',num2str(bump),'G',num2str(gloss),'L',num2str(lf),'.mat');
-                stimfilenameR = strcat('Tone_Mapped_SOU/Mesh',Stereolist(stereo),eyelist(eye+1),'D',num2str(bump),'G',num2str(gloss),'L',num2str(lf),'.mat');
+                stimfilenameL = strcat('ToneMapped_SOU/Mesh',Stereolist(stereo),eyelist(eye),'D',num2str(bump),'G',num2str(gloss),'L',num2str(lf),'.mat');
+                stimfilenameR = strcat('ToneMapped_SOU/Mesh',Stereolist(stereo),eyelist(eye+1),'D',num2str(bump),'G',num2str(gloss),'L',num2str(lf),'.mat');
                 stimlistL{i,1} = i;
                 stimlistL{i,2} = stimfilenameL;
                 stimlistL{i,3} = stimfilenameR;
@@ -46,18 +46,18 @@ stimlistL=sorted_listL;
 
 
 
-InputDatastruct.BINOC.stimlistL=stimlistL;
+InputDatastruct.BINO.stimlistL=stimlistL;
 
 
-InputDatastruct.BINOC.objnumber = InputDatastruct.BINOC.stimlistL(:,1);
-InputDatastruct.BINOC.objnameL = InputDatastruct.BINOC.stimlistL(:,2);
-InputDatastruct.BINOC.objnameR = InputDatastruct.BINOC.stimlistL(:,3);
-InputDatastruct.BINOC.objGlossLevel = InputDatastruct.BINOC.stimlistL(:,4);
-InputDatastruct.BINOC.objBumpLevel = InputDatastruct.BINOC.stimlistL(:,5);
-InputDatastruct.BINOC.objScene = InputDatastruct.BINOC.stimlistL(:,6);
-InputDatastruct.BINOC.stereo = InputDatastruct.BINOC.stimlistL(:,7);
+InputDatastruct.BINO.objnumber = InputDatastruct.BINO.stimlistL(:,1);
+InputDatastruct.BINO.objnameL = InputDatastruct.BINO.stimlistL(:,2);
+InputDatastruct.BINO.objnameR = InputDatastruct.BINO.stimlistL(:,3);
+InputDatastruct.BINO.objGlossLevel = InputDatastruct.BINO.stimlistL(:,4);
+InputDatastruct.BINO.objBumpLevel = InputDatastruct.BINO.stimlistL(:,5);
+InputDatastruct.BINO.objScene = InputDatastruct.BINO.stimlistL(:,6);
+InputDatastruct.BINO.stereo = InputDatastruct.BINO.stimlistL(:,7);
 
-ntrials=length(InputDatastruct.BINOC.objnumber);   
+ntrials=length(InputDatastruct.BINO.objnumber);   
 
 
 if InputDatastruct.isfixed==1
@@ -68,14 +68,14 @@ end
     
 %     Randomise each list (not really sure why you have to do this since the trials are already randomized, but it
 %     was in the last version).
-    InputDatastruct.BINOC.randomorder=randomorder;
-    InputDatastruct.BINOC.objnumber=InputDatastruct.BINOC.objnumber(randomorder);  
-    InputDatastruct.BINOC.objnameL=InputDatastruct.BINOC.objnameL(randomorder);   
-    InputDatastruct.BINOC.objnameR=InputDatastruct.BINOC.objnameR(randomorder);   
-    InputDatastruct.BINOC.objGlossLevel=InputDatastruct.BINOC.objGlossLevel(randomorder);
-    InputDatastruct.BINOC.objBumpLevel = InputDatastruct.BINOC.objBumpLevel(randomorder);
-    InputDatastruct.BINOC.objScene = InputDatastruct.BINOC.objScene(randomorder);
-    InputDatastruct.BINOC.stereo = InputDatastruct.BINOC.objScene(randomorder);
+    InputDatastruct.BINO.randomorder=randomorder;
+    InputDatastruct.BINO.objnumber=InputDatastruct.BINO.objnumber(randomorder);  
+    InputDatastruct.BINO.objnameL=InputDatastruct.BINO.objnameL(randomorder);   
+    InputDatastruct.BINO.objnameR=InputDatastruct.BINO.objnameR(randomorder);   
+    InputDatastruct.BINO.objGlossLevel=InputDatastruct.BINO.objGlossLevel(randomorder);
+    InputDatastruct.BINO.objBumpLevel = InputDatastruct.BINO.objBumpLevel(randomorder);
+    InputDatastruct.BINO.objScene = InputDatastruct.BINO.objScene(randomorder);
+    InputDatastruct.BINO.stereo = InputDatastruct.BINO.stereo(randomorder);
 
 
 
