@@ -25,7 +25,7 @@ t = KbName('ESCAPE');
 %% File I/O handling.
 
 % Define filenames of input files and result file:
-datafilename = strcat('GlossYardstickExp_',subjInitials,'.mat'); % name of data file to write to
+datafilename = strcat('GlossYardstickExpBINOC_',subjInitials,'.mat'); % name of data file to write to
 
 % Navigate to the Data directory.
 cd('Data')
@@ -38,7 +38,7 @@ if exist(datafilename{1})
 
 % If the datafile exists, prompt to check the number of trials already
 % done.
-X = [' You have done ',num2str(InputDatastruct.(datadir).currenttrial),' trials in session ', num2str(session)];
+X = [' You have done ',num2str(InputDatastruct.BINOC.currenttrial),' trials'];
 disp(X)
 % Ask for response.
     Q1=input('That filename already exists. You have done the above number of trials in this session, correct [0= no, 1= yes]');
@@ -49,13 +49,13 @@ disp(X)
 %         If correct, load the data and start at the next trial from where
 %         they left off.
 
-        InputDatastruct.(datadir).data=InputDatastruct.(datadir).data;
-        InputDatastruct.(datadir).currenttrial=InputDatastruct.(datadir).currenttrial+1;
+        InputDatastruct.BINOC.data=InputDatastruct.BINOC.data;
+        InputDatastruct.BINOC.currenttrial=InputDatastruct.BINOC.currenttrial+1;
     end
 else
 %     If the datafile is a new one, then create a cell to store the data.
-    InputDatastruct.(datadir).data = cell(81,8);
-    InputDatastruct.(datadir).currenttrial=1;
+    InputDatastruct.BINOC.data = cell(486,8);
+    InputDatastruct.BINOC.currenttrial=1;
 end
 % Navigate back to the main directory.
 cd('../')
@@ -128,7 +128,7 @@ try
     WaitSecs(1.000);
     
 %     Define experiment stop point for for loop.
-     ntrials=length(InputDatastruct.(datadir).objnumber); 
+     ntrials=length(InputDatastruct.BINOC.objnumber); 
 
     %%%%%%%%%%%%%%%%%%%%%%
     % slider bar stuff
@@ -164,7 +164,7 @@ try
     glossRect = OffsetRect(selectRect, sx2, bar_yPosition+100);
 
     % loop through trials
-    for trial=InputDatastruct.(datadir).currenttrial:ntrials
+    for trial=InputDatastruct.BINOC.currenttrial:ntrials
         
 
         WaitSecs(0.500);
@@ -175,15 +175,19 @@ try
         % script:
         
         % Load the first stimulus file name based on the data in structure.
-        stimfilename=char(InputDatastruct.(datadir).objname(trial)); 
-        imdata=load(char(stimfilename),'gammaCorrected8bit');
+        stimfilenameL=char(InputDatastruct.BINOC.objnameL(trial));
+        stimfilenameR=char(InputDatastruct.BINOC.objnameR(trial));
+        
+        imdataL=load(char(stimfilename),'gammaCorrected8bit');
+        imdataR=load(char(stimfilename),'gammaCorrected8bit');
 
         
         while 1 
 
             ShowCursor;
             % make texture image out of image matrix.
-            tex=Screen('MakeTexture', window, imdata.gammaCorrected8bit);
+            texL=Screen('MakeTexture', window, imdataL.gammaCorrected8bit);
+            texR=Screen('MakeTexture', window, imdataR.gammaCorrected8bit);
     
             % Draw texture image to backbuffer. It will be automatically
             % centered in the middle of the display if you don't specify a
