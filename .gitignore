@@ -1,0 +1,19 @@
+# Ignore everything
+*
+
+# But not these files...
+!.gitignore
+!GlossShapeYardstickExp_Mouse_NH.m
+!GlossShapeYardstickExp_Mouse_NH_BINOC.m
+!prepare_stim.m
+!RunExp.m
+!EXPMAIN.m
+!STORERESULTS.m
+
+
+
+!template.latex
+# etc...
+
+# ...even if they are in subdirectories
+!*/
