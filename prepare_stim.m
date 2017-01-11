@@ -1,34 +1,33 @@
-% write images into mat file
+
 function [InputDatastruct]= prepare_stim(InputDatastruct,session);
 
-
-Stereolist={'-15','0','+15'};
-eyelist={'L','R'};
+% Loop through stereo, gloss, bump & lf conditions to create cell of trial
+% info
 
 if InputDatastruct.isbinocular==1
+    
+    Stereolist={'-15','0','+15'};
+    eyelist={'L','R'};
     ntrials=486;
     randomorder=randperm(ntrials);
     i=1
     for gloss=2:10
         for bump=2:10
-            
             for lf=1:2
-                
                 for stereo=1:3
                     for eye=1
-                stimfilenameL = strcat('ToneMapped_SOU/Mesh',Stereolist(stereo),eyelist(eye),'D',num2str(bump),'G',num2str(gloss),'L',num2str(lf),'.mat');
-                stimfilenameR = strcat('ToneMapped_SOU/Mesh',Stereolist(stereo),eyelist(eye+1),'D',num2str(bump),'G',num2str(gloss),'L',num2str(lf),'.mat');
-                stimlistL{i,1} = i;
-                stimlistL{i,2} = stimfilenameL;
-                stimlistL{i,3} = stimfilenameR;
-                stimlistL{i,4} = gloss;
-                stimlistL{i,5} = bump;
-                stimlistL{i,6} = lf;
-                stimlistL{i,7} = stereo;
-                stimlistL{i,8} = randomorder(i);
-
-               
-                i = i+1;
+                        stimfilenameL = strcat('ToneMapped_SOU/Mesh',Stereolist(stereo),eyelist(eye),'D',num2str(bump),'G',num2str(gloss),'L',num2str(lf),'.mat');
+%                         Also get the right eyes image name.
+                        stimfilenameR = strcat('ToneMapped_SOU/Mesh',Stereolist(stereo),eyelist(eye+1),'D',num2str(bump),'G',num2str(gloss),'L',num2str(lf),'.mat');
+                        stimlistL{i,1} = i;
+                        stimlistL{i,2} = stimfilenameL;
+                        stimlistL{i,3} = stimfilenameR;
+                        stimlistL{i,4} = gloss;
+                        stimlistL{i,5} = bump;
+                        stimlistL{i,6} = lf;
+                        stimlistL{i,7} = stereo;
+                        stimlistL{i,8} = randomorder(i);
+                        i = i+1;
                     end
                 end
             end
@@ -38,21 +37,15 @@ if InputDatastruct.isbinocular==1
     
 InputDatastruct.stimlistL=stimlistL;
 
-% randomise
-
+% Randomise, unless fixed trial order is checked.
 if InputDatastruct.isfixed==0
-sorted_listL = sortrows(stimlistL,8);
-stimlistL=sorted_listL;
+    sorted_listL = sortrows(stimlistL,8);
+    stimlistL=sorted_listL;
 else
     stimlistL=stimlistL;
 end
-% Assign the stimlists for each block.
-
-
-
+% Assign the info to the structure.
 InputDatastruct.BINO.stimlistL=stimlistL;
-
-
 InputDatastruct.BINO.objnumber = InputDatastruct.BINO.stimlistL(:,1);
 InputDatastruct.BINO.objnameL = InputDatastruct.BINO.stimlistL(:,2);
 InputDatastruct.BINO.objnameR = InputDatastruct.BINO.stimlistL(:,3);
@@ -60,18 +53,16 @@ InputDatastruct.BINO.objGlossLevel = InputDatastruct.BINO.stimlistL(:,4);
 InputDatastruct.BINO.objBumpLevel = InputDatastruct.BINO.stimlistL(:,5);
 InputDatastruct.BINO.objScene = InputDatastruct.BINO.stimlistL(:,6);
 InputDatastruct.BINO.stereo = InputDatastruct.BINO.stimlistL(:,7);
-
 ntrials=length(InputDatastruct.BINO.objnumber);   
 
-
+%     Randomise each list (not really sure why you have to do this since the trials are already randomized, but it
+%     was in the last version).
 if InputDatastruct.isfixed==1
     randomorder=1:ntrials;
 else
     randomorder=randperm(ntrials);
 end
     
-%     Randomise each list (not really sure why you have to do this since the trials are already randomized, but it
-%     was in the last version).
     InputDatastruct.BINO.randomorder=randomorder;
     InputDatastruct.BINO.objnumber=InputDatastruct.BINO.objnumber(randomorder);  
     InputDatastruct.BINO.objnameL=InputDatastruct.BINO.objnameL(randomorder);   
@@ -80,10 +71,6 @@ end
     InputDatastruct.BINO.objBumpLevel = InputDatastruct.BINO.objBumpLevel(randomorder);
     InputDatastruct.BINO.objScene = InputDatastruct.BINO.objScene(randomorder);
     InputDatastruct.BINO.stereo = InputDatastruct.BINO.stereo(randomorder);
-
-
-
-
 
 
     
