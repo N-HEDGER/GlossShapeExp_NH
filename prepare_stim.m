@@ -6,7 +6,7 @@ Stereolist={'-15','0','+15'};
 eyelist={'L','R'};
 
 if InputDatastruct.isbinocular==1
-    ntrials=162;
+    ntrials=486;
     randomorder=randperm(ntrials);
     i=1
     for gloss=2:10
@@ -15,14 +15,15 @@ if InputDatastruct.isbinocular==1
             for lf=1:2
                 
                 for stereo=1:3
-                    for eye=1:2
-                stimfilenameL = strcat('Tone_Gamma_NY/Mesh',Stereolist(stereo),eyelist(eye),'D',num2str(bump),'G',num2str(gloss),'L',num2str(lf),'.mat')
+                    for eye=1
+                stimfilenameL = strcat('Tone_Mapped_SOU/Mesh',Stereolist(stereo),eyelist(eye),'D',num2str(bump),'G',num2str(gloss),'L',num2str(lf),'.mat');
                 stimlistL{i,1} = i;
                 stimlistL{i,2} = stimfilenameL;
                 stimlistL{i,3} = gloss;
                 stimlistL{i,4} = bump;
                 stimlistL{i,5} = lf;
-                stimlistL{i,6} = randomorder(i);
+                stimlistL{i,6} = stereo;
+                stimlistL{i,7} = randomorder(i);
 
                
                 i = i+1;
