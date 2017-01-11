@@ -105,10 +105,6 @@ try
     priorityLevel=MaxPriority(window);
     Priority(priorityLevel);
     
-
-    phaselabel='test';
-
-    
     % Write instruction message for subject, centered in the
     % middle of the display, in white color.
     str=sprintf('Match the glossiness and bumpiness of the stimuli on the screen\n with the real objects to your left\n When you make your settings hit space to continue to next trial\n');
@@ -166,7 +162,6 @@ try
     sx = xCenterL;
     sx2 = xCenterL;
     bumpRect = OffsetRect(InputDatastruct.const.selectRect, sx, bar_yPosition);
-    
     glossRect = OffsetRect(InputDatastruct.const.selectRect, sx2, bar_yPosition+100);
     
     %% Set up formatting for text output.

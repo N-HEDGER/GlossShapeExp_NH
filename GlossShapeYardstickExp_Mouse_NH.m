@@ -44,75 +44,71 @@ cd('Data')
 % If the data filename exists, get rid of the loaded stimulus array.
 if exist(datafilename{1})
     clear ('InputDatastruct')
-%     Instead, load the structure that was saved the first time the
-%     experiment was run.
+    %     Instead, load the structure that was saved the first time the
+    %     experiment was run.
     load(datafilename{1})
     
     formatSpecRestart=('Subject restarted at: %s');
     log_txt=sprintf(formatSpecRestart,num2str(clock));
     fprintf(log_text_fid,'%s\n',log_txt);
     
-
-% If the datafile exists, prompt to check the number of trials already
-% done.
-X = [' You have done ',num2str(InputDatastruct.(datadir).currenttrial),' trials in session ', num2str(session)];
-disp(X)
-% Ask for response.
+    
+    % If the datafile exists, prompt to check the number of trials already
+    % done.
+    X = [' You have done ',num2str(InputDatastruct.(datadir).currenttrial),' trials in session ', num2str(session)];
+    disp(X)
+    % Ask for response.
     Q1=input('That filename already exists. You have done the above number of trials in this session, correct [0= no, 1= yes]');
     if Q1==0
-%         If incorrect, chose different initials.
+        %         If incorrect, chose different initials.
         error('something has gone wrong')
     else
-%         If correct, load the data and start at the next trial from where
-%         they left off.
-
+        %         If correct, load the data and start at the next trial from where
+        %         they left off.
+        
         InputDatastruct.(datadir).data=InputDatastruct.(datadir).data;
         InputDatastruct.(datadir).currenttrial=InputDatastruct.(datadir).currenttrial+1;
     end
 else
-%     If the datafile is a new one, then create a cell to store the data.
+    %     If the datafile is a new one, then create a cell to store the data.
     InputDatastruct.(datadir).data = cell(81,8);
     InputDatastruct.(datadir).currenttrial=1;
 end
 % Navigate back to the main directory.
 cd('../')
+%% Save important constants to the structure
+
+
+    InputDatastruct.const.IM_WIDTH_DISP=540;
+    InputDatastruct.const.IM_HEIGHT_DISP=540;
+    InputDatastruct.const.noisesize=100;
+    [widthW, heightW] = Screen('WindowSize', 0);
+    InputDatastruct.const.wRectL = [0 0 widthW/2 heightW];
+    InputDatastruct.const.wRectR = [(widthW/2)+1 0  widthW heightW];
+    InputDatastruct.const.selectRect = [0 0 10 40];
+    % Make a base rectangle for the slider bar
+    InputDatastruct.const.baseBar_xSize = 600;
+    InputDatastruct.const. baseBar_ySize = 10;
+    InputDatastruct.const.textsize = 32;
 
 
 %% Initialize experiment.
 
 try
 
-    % Get screenNumber of stimulation display. We choose the display with
-    % the maximum index, which is usually the right one, e.g., the external
-    % display on a Laptop:
+    % Get screen definitions and open window.
     screens = Screen('Screens');
-    screenNumber = max(screens);
-    
-    IM_WIDTH_DISP=505;
-    IM_HEIGHT_DISP=505;
-   
-    
+    screenNumber = max(screens);    
     % Hide the mouse cursor:
     HideCursor;
-    
-    % Returns as default the mean gray value of screen:
     gray = GrayIndex(screenNumber); 
     white = WhiteIndex(screenNumber);
     black = BlackIndex(screenNumber);
-    
-    % 'window' is the handle used to direct all drawing commands to that 
-    % window. 'windowRect' is a rectangle defining the size of the window.
     PsychImaging('PrepareConfiguration');
     PsychImaging('AddTask', 'General', 'UseFastOffscreenWindows');
-    
     [window, windowRect] = PsychImaging('OpenWindow', 0, gray);
-    %Screen('LoadNormalizedGammaTable', window, gammaTable*[1 1 1]);
-
-    % Get the size of the on screen window
     [screenXpixels, screenYpixels] = Screen('WindowSize', window);
-
-    % Set text size 
-    Screen('TextSize', window, 32);
+    Screen('TextSize', window, InputDatastruct.const.textsize);
     
     % Do dummy calls to GetSecs, WaitSecs, KbCheck to make sure
     % they are loaded and ready when we need them - without delays
@@ -125,23 +121,17 @@ try
     priorityLevel=MaxPriority(window);
     Priority(priorityLevel);
     
-
-    phaselabel='test';
-
     % Write instruction message for subject, centered in the
     % middle of the display, in white color.
     str=sprintf('Match the glossiness and bumpiness of the stimuli on the screen\n with the real objects to your left\n When you make your settings hit space to continue to next trial\n');
     message = ['test phase ...\n' str '... press mouse button to begin ...'];
     
 %     Get centres of all rectangles (main window, left and right monitors).
-    [xCenter, yCenter] = RectCenter(windowRect);
+   
     [widthW, heightW] = Screen('WindowSize', 0);
     
-    wRectL = [0 0 widthW/2 heightW];
-    wRectR = [(widthW/2)+1 0  widthW heightW];
-    
-    [xCenterL, yCenterL] = RectCenter(wRectL);
-    [xCenterR, yCenterR] = RectCenter(wRectR);
+    [xCenterL, yCenterL] = RectCenter(InputDatastruct.const.wRectL);
+    [xCenterR, yCenterR] = RectCenter(InputDatastruct.const.wRectR);
     
      % Draw instruction text:
     DrawFormattedText(window, message, xCenterL, yCenterL, WhiteIndex(window),[],1);
@@ -163,6 +153,9 @@ try
 %     Define experiment stop point for for loop.
      ntrials=length(InputDatastruct.(datadir).objnumber); 
 
+    [xCenter, yCenter] = RectCenter(windowRect);
+    
+    
     %%%%%%%%%%%%%%%%%%%%%%
     % slider bar stuff
     %%%%%%%%%%%%%%%%%%%%%%   
@@ -170,27 +163,15 @@ try
     selectRect = [0 0 10 40];
     
     % Make a base rectangle for the slider bar
-    baseBar_xSize = 600;
-    baseBar_ySize = 10;
-    baseBar =[0 0 baseBar_xSize baseBar_ySize];
+    baseBar =[0 0  InputDatastruct.const.baseBar_xSize  InputDatastruct.const.baseBar_ySize];
+    bar_xPosition = xCenterL - (InputDatastruct.const.baseBar_xSize/2);
+    bar_yPosition = screenYpixels*0.9;
     
     % Make a rectangle for the ticks on the slider bar
     tick = [0 0 4 10];
 
-    [imRectL,dh,dv] = CenterRect([0 0 IM_WIDTH_DISP IM_HEIGHT_DISP], wRectL)
-    [imRectR,dh,dv] = CenterRect([0 0 IM_WIDTH_DISP IM_HEIGHT_DISP], wRectR)
-
-    % Make a base rectangle for the selector
-    selectRect = [0 0 10 40];
-    
-    % Make a base rectangle for the slider bar
-    baseBar_xSize = 600;
-    baseBar_ySize = 10;
-    baseBar =[0 0 baseBar_xSize baseBar_ySize];    
-    bar_xPosition = xCenterL - (baseBar_xSize/2);
-    bar_yPosition = screenYpixels*0.9;
-    
-    % Make a rectangle for the ticks on the tick = [0 0 4 10];
+    [imRectL,dh,dv] = CenterRect([0 0 InputDatastruct.const.IM_WIDTH_DISP InputDatastruct.const.IM_HEIGHT_DISP], InputDatastruct.const.wRectL)
+    [imRectR,dh,dv] = CenterRect([0 0 InputDatastruct.const.IM_WIDTH_DISP InputDatastruct.const.IM_HEIGHT_DISP], InputDatastruct.const.wRectR)
     
     % Define blue color
     blue = [0 0 255];
@@ -202,9 +183,11 @@ try
     % We now set the slider bars' initial position 
     sx = xCenterL;
     sx2 = xCenterL;
-    bumpRect = OffsetRect(selectRect, sx, bar_yPosition);
-    glossRect = OffsetRect(selectRect, sx2, bar_yPosition+100);
+    bumpRect = OffsetRect(InputDatastruct.const.selectRect, sx, bar_yPosition);
+    glossRect = OffsetRect(InputDatastruct.const.selectRect, sx2, bar_yPosition+100);
 
+    %% Set up formatting for text output
+    
     % Put initial information into the log.
     log_txt=sprintf('Subject is doing block %f',InputDatastruct.nblock);
     fprintf(log_text_fid,'%s\n',log_txt);
@@ -226,16 +209,11 @@ try
 
         WaitSecs(0.500);
         
-        % initialize KbCheck and variables to make sure they're
-        % properly initialized/allocted by Matlab - this to avoid time
-        % delays in the critical reaction time measurement part of the
-        % script:
-        
         % Load the first stimulus file name based on the data in structure.
         stimfilename=char(InputDatastruct.(datadir).objname(trial)); 
         imdata=load(char(stimfilename),'gammaCorrected8bit');
-
-
+        
+        % Print trial and stimulus info to file
         trialtxt=num2str(trial);
         stimtxt=stimfilename;
         log_txt=sprintf(formatSpec,trialtxt,stimtxt);
@@ -244,38 +222,24 @@ try
  
         while 1 
 
-%              ShowCursor;
-             
-            
             % make texture image out of image matrix.
             
             tex=Screen('MakeTexture', window, imdata.gammaCorrected8bit);
             
-            % Draw texture image to backbuffer. It will be automatically
-            % centered in the middle of the display if you don't specify a
-            % different destination:
-            imgxLeft = screenXpixels/2 - 550/2;
-            imgxRight = imgxLeft + 550;
-            imgyTop = screenYpixels*0.15;
-            imgyBottom = imgyTop + 550;
-
+            % Draw
             Screen('DrawTexture', window, tex, [], [imRectL]);    
             Screen('DrawTexture', window, tex, [], [imRectR]);
-            Screen('TextSize', window, 16);
-            
+            Screen('TextSize', window, InputDatastruct.const.textsize/2);
             baseBarBump = OffsetRect(baseBar, bar_xPosition, bar_yPosition);
             rectColor = [0 0 0];
             Screen('FillRect', window, rectColor, baseBarBump);
-            
             baseBarGloss = OffsetRect(baseBar, bar_xPosition, bar_yPosition+100);
             rectColor2 = [0 0 0];
             Screen('FillRect', window, rectColor2, baseBarGloss);
             
-            % add ticks to the bar, bar is 1000 pixels in x-dimension so the ticks
-            % should be at every 100th
+            % add ticks to the bar.
             vec=0:60:600;
             for i=0:60:600
-                
                 tick_offset = OffsetRect(tick, bar_xPosition+i-2, bar_yPosition+20);
                 Screen('FillRect', window, rectColor, tick_offset);
                 tick_offset2 = OffsetRect(tick, bar_xPosition+i-2, bar_yPosition+120);
@@ -285,10 +249,8 @@ try
                 message2 = strcat(num2str((length(vec)-round(i/60))));
                 DrawFormattedText(window, message, bar_xPosition+i-4, (bar_yPosition+30), white, [], 1,[],[]);
                 DrawFormattedText(window, message2, bar_xPosition+i-4, (bar_yPosition+130), white, [], 1,[],[]);
-                
                 k=num2str(trial);
-                DrawFormattedText(window, k, 1, 1, white, [], 1,[],1);
-                
+                DrawFormattedText(window, k, 1, 1, white, [], 1,[],1);   
             end
             
             labelGloss = 'Gloss';
@@ -318,8 +280,8 @@ try
             end
             
             % Center the rectangle on its new screen position
-            bumpRect = CenterRectOnPointd(selectRect, sx, bar_yPosition);
-            glossRect = CenterRectOnPointd(selectRect, sx2, bar_yPosition+100);
+            bumpRect = CenterRectOnPointd(InputDatastruct.const.selectRect, sx, bar_yPosition);
+            glossRect = CenterRectOnPointd(InputDatastruct.const.selectRect, sx2, bar_yPosition+100);
             
             % Draw the rect to the screen
             Screen('FillRect', window, blue, bumpRect);
@@ -335,15 +297,11 @@ try
                bumpLevelResp = sx
                break;
             end
-            
-            
+               
             % Flip to the screen
             
             Screen('Flip', window);
-            
-          
-            
-            
+           
             % Check to see if the mouse button has been released and if so reset
             % the offset cue
             
@@ -354,10 +312,9 @@ try
 
         end
         
-          log_txt=sprintf(formatSpecResponse,GetSecs);
-          fprintf(log_text_fid,'%s\n',log_txt);
-        
-        
+         % Print time of response to external file
+        log_txt=sprintf(formatSpecResponse,GetSecs);
+        fprintf(log_text_fid,'%s\n',log_txt);
         
         % Clear screen to background color after subjects response (on test phase)
         Screen('FillRect', window, gray, [0 0 screenXpixels screenYpixels]);
@@ -373,26 +330,24 @@ try
         InputDatastruct.(datadir).data{trial,3} = char(InputDatastruct.(datadir).objname{trial});
         InputDatastruct.(datadir).data{trial,4} =  InputDatastruct.(datadir).objScene{trial};
         InputDatastruct.(datadir).data{trial,5} =  InputDatastruct.(datadir).objGlossLevel{trial};
-%         InputDatastruct.(datadir).data{trial,6} = ((glossLevelResp-bar_xPosition)/6); %convert betw 0-100
-InputDatastruct.(datadir).data{trial,6} = ((2560-glossLevelResp)-980)/60; %convert betw 0-100
+        InputDatastruct.(datadir).data{trial,6} = ((2560-glossLevelResp)-bar_xPosition)/60; %convert betw 0-100
         InputDatastruct.(datadir).data{trial,7} =  InputDatastruct.(datadir).objBumpLevel{trial};
-%         InputDatastruct.(datadir).data{trial,8} = ((bumpLevelResp-bar_xPosition)/150)+0.4; % convert betw 0.4-4.4
-InputDatastruct.(datadir).data{trial,8} = ((2560-bumpLevelResp)-980)/60;
+        InputDatastruct.(datadir).data{trial,8} = ((2560-bumpLevelResp)-bar_xPosition)/60;
 
-% Keep the current trial updated for if the subjects quit.
-InputDatastruct.(datadir).currenttrial=trial;
-
-% Save the data in the data directory
-cd('Data')
-save(datafilename{1},'InputDatastruct');
-cd('../')
+        % Keep the current trial updated for if the subjects quit.
+        InputDatastruct.(datadir).currenttrial=trial;
+        
+        % Save the data in the data directory
+        cd('Data')
+        save(datafilename{1},'InputDatastruct');
+        cd('../')
         Screen('Close');
         
 % Prompt the observer to quite or begin new trial.
 
 NEWTRIAL='Press escape to quit or space for a new trial';
-    DrawFormattedText(window, NEWTRIAL, xCenterL, yCenterL, WhiteIndex(window),[],1);
-    DrawFormattedText(window, NEWTRIAL, xCenterR, yCenterR, WhiteIndex(window),[],1);
+DrawFormattedText(window, NEWTRIAL, xCenterL, yCenterL, WhiteIndex(window),[],1);
+DrawFormattedText(window, NEWTRIAL, xCenterR, yCenterR, WhiteIndex(window),[],1);
 Screen('Flip', window);
 [KeyIsDown,secs,keyCode]=KbCheck;
 
@@ -413,19 +368,19 @@ end
     
     currenttrial
     
-    % save datafile to folder 
+    % save datafile to folder
     
-
-% Cleanup at end of experiment - Close window, show mouse cursor, close
-% result file, switch Matlab/Octave back to priority 0 -- normal
-% priority:
-Screen('CloseAll');
-ShowCursor;
-fclose('all');
-Priority(0);
-
-% End of experiment:
-return;
+    
+    % Cleanup at end of experiment - Close window, show mouse cursor, close
+    % result file, switch Matlab/Octave back to priority 0 -- normal
+    % priority:
+    Screen('CloseAll');
+    ShowCursor;
+    fclose('all');
+    Priority(0);
+    
+    % End of experiment:
+    return;
 catch
     % catch error: This is executed in case something goes wrong in the
     % 'try' part due to programming error etc.:
