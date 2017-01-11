@@ -78,6 +78,8 @@ try
     
     IM_WIDTH_DISP=505;
     IM_HEIGHT_DISP=505;
+    noisesize=100;
+    noise = 255*rand([IM_HEIGHT_DISP+noisesize IM_WIDTH_DISP+noisesize]);
     
     % Hide the mouse cursor:
     HideCursor;
@@ -164,15 +166,19 @@ try
     baseBar_ySize = 10;
     baseBar =[0 0 baseBar_xSize baseBar_ySize];
     
-    bar_xPosition = (screenXpixels/2) - (baseBar_xSize/2)
-    bar_yPosition = screenYpixels*(0.9);
-    
+   
+    bar_xPosition = xCenterL - (baseBar_xSize/2);
+    bar_yPosition = screenYpixels*0.9;
+  
     % Make a rectangle for the ticks on the slider bar
     tick = [0 0 4 10];
     
     
     [imRectL,dh,dv] = CenterRect([0 0 IM_WIDTH_DISP IM_HEIGHT_DISP], wRectL)
     [imRectR,dh,dv] = CenterRect([0 0 IM_WIDTH_DISP IM_HEIGHT_DISP], wRectR)
+    
+    [noiserectL,dh,dv] = CenterRect([0 0 IM_WIDTH_DISP+noisesize IM_HEIGHT_DISP+noisesize], wRectL)
+    [noiserectR,dh,dv] = CenterRect([0 0 IM_WIDTH_DISP+noisesize IM_HEIGHT_DISP+noisesize], wRectR)
     
     
     % Define blue color
@@ -207,7 +213,7 @@ try
     
     
     
-    
+      
 
     % loop through trials
     for trial=InputDatastruct.BINO.currenttrial:ntrials
@@ -238,8 +244,14 @@ try
 
 %             ShowCursor;
             % make texture image out of image matrix.
-            texL=Screen('MakeTexture', window, im2uint8(imdataL.gammaCorrected));
-            texR=Screen('MakeTexture', window, im2uint8(imdataR.gammaCorrected));
+            texL=Screen('MakeTexture', window, fliplr(im2uint8(imdataL.gammaCorrected)));
+            texR=Screen('MakeTexture', window, fliplr(im2uint8(imdataR.gammaCorrected)));
+            
+            
+          
+            noisetex=Screen('MakeTexture', window, noise);
+            
+            
     
             % Draw texture image to backbuffer. It will be automatically
             % centered in the middle of the display if you don't specify a
@@ -249,8 +261,14 @@ try
             imgyTop = screenYpixels*0.15;
             imgyBottom = imgyTop + 550;
 
+            
+                        Screen('DrawTexture', window, noisetex, [], [noiserectL]);    
+            Screen('DrawTexture', window, noisetex, [], [noiserectR]);
+            
             Screen('DrawTexture', window, texL, [], [imRectL]);    
             Screen('DrawTexture', window, texR, [], [imRectR]);
+            
+
             Screen('TextSize', window, 16);
             
             baseBarBump = OffsetRect(baseBar, bar_xPosition, bar_yPosition);
