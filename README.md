@@ -22,6 +22,7 @@ The main file that drives the experiment is EXPMAIN.m.
 Still to do:
 
 1) Monocular block still reads in old stimuli.
-2) Agree on presentation times etc
-3) Run through as dummy participant
-4) Get someone with better stereo vision to check stimuli are ok.
+2) Run through as dummy participant.
+3) Darker background.
+4) Fix scale position+ tickmarks, 0-12 scale.
+
