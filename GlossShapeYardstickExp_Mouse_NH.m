@@ -106,7 +106,7 @@ try
     black = BlackIndex(screenNumber);
     PsychImaging('PrepareConfiguration');
     PsychImaging('AddTask', 'General', 'UseFastOffscreenWindows');
-    [window, windowRect] = PsychImaging('OpenWindow', 0, gray);
+    [window, windowRect] = PsychImaging('OpenWindow', 0, black);
     [screenXpixels, screenYpixels] = Screen('WindowSize', window);
     Screen('TextSize', window, InputDatastruct.const.textsize);
     
@@ -317,7 +317,7 @@ try
         fprintf(log_text_fid,'%s\n',log_txt);
         
         % Clear screen to background color after subjects response (on test phase)
-        Screen('FillRect', window, gray, [0 0 screenXpixels screenYpixels]);
+        Screen('FillRect', window, black, [0 0 screenXpixels screenYpixels]);
         sx = xCenter;
         sx2 = xCenter;
         Screen('Flip', window);
