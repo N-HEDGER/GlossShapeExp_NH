@@ -23,6 +23,5 @@ Still to do:
 
 1) Monocular block still reads in old stimuli.
 2) Run through as dummy participant.
-3) Darker background.
-4) Fix scale position+ tickmarks, 0-12 scale.
+
 
