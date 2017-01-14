@@ -165,7 +165,7 @@ try
     % Make a base rectangle for the slider bar
     baseBar =[0 0  InputDatastruct.const.baseBar_xSize  InputDatastruct.const.baseBar_ySize];
     bar_xPosition = xCenterL - (InputDatastruct.const.baseBar_xSize/2);
-    bar_yPosition = screenYpixels*0.9;
+    bar_yPosition = screenYpixels*0.75;
     
     % Make a rectangle for the ticks on the slider bar
     tick = [0 0 4 10];
@@ -230,41 +230,67 @@ try
             Screen('DrawTexture', window, tex, [], [imRectL]);    
             Screen('DrawTexture', window, tex, [], [imRectR]);
             Screen('TextSize', window, InputDatastruct.const.textsize/2);
+            
+           Screen('TextSize', window, InputDatastruct.const.textsize/2);  
             baseBarBump = OffsetRect(baseBar, bar_xPosition, bar_yPosition);
-            rectColor = [0 0 0];
+            baseBarBumpR = OffsetRect(baseBar, bar_xPosition+2560, bar_yPosition);
+            rectColor = [200 200 200];
             Screen('FillRect', window, rectColor, baseBarBump);
+            Screen('FillRect', window, rectColor, baseBarBumpR);
+            
             baseBarGloss = OffsetRect(baseBar, bar_xPosition, bar_yPosition+100);
-            rectColor2 = [0 0 0];
+            baseBarGlossR = OffsetRect(baseBar, bar_xPosition+2560, bar_yPosition+100);
+            rectColor2 = [200 200 200];
             Screen('FillRect', window, rectColor2, baseBarGloss);
+            Screen('FillRect', window, rectColor2, baseBarGlossR);
+            
             
             % add ticks to the bar.
             vec=0:60:600;
             for i=0:60:600
-                tick_offset = OffsetRect(tick, bar_xPosition+i-2, bar_yPosition+20);
+                
+                tick_offset = OffsetRect(tick, bar_xPosition+i-2, bar_yPosition-5);
                 Screen('FillRect', window, rectColor, tick_offset);
-                tick_offset2 = OffsetRect(tick, bar_xPosition+i-2, bar_yPosition+120);
+                tick_offsetR = OffsetRect(tick, (bar_xPosition+i-2)+2560, bar_yPosition-5);
+                Screen('FillRect', window, rectColor, tick_offset);
+                Screen('FillRect', window, rectColor, tick_offsetR);
+                
+                tick_offset2 = OffsetRect(tick, bar_xPosition+i-2, bar_yPosition+95);
+                tick_offset2R = OffsetRect(tick, (bar_xPosition+i-2)+2560, bar_yPosition+95);
                 Screen('FillRect', window, rectColor, tick_offset2);
+                 Screen('FillRect', window, rectColor, tick_offset2R);
                 % Write the number text
-                message = strcat(int2str((length(vec)-round(i/60))));
-                message2 = strcat(num2str((length(vec)-round(i/60))));
+                message = strcat(int2str((length(vec)-round(i/50)+1)));
+                message2 = strcat(num2str((length(vec)-round(i/50)+1)));
+                
+                
                 DrawFormattedText(window, message, bar_xPosition+i-4, (bar_yPosition+30), white, [], 1,[],[]);
                 DrawFormattedText(window, message2, bar_xPosition+i-4, (bar_yPosition+130), white, [], 1,[],[]);
+                
+                DrawFormattedText(window, message, (bar_xPosition+i-4)+2560, (bar_yPosition+30), white, [], 1,[],[]);
+                DrawFormattedText(window, message2, (bar_xPosition+i-4)+2560, (bar_yPosition+130), white, [], 1,[],[]);
+                
                 k=num2str(trial);
-                DrawFormattedText(window, k, 1, 1, white, [], 1,[],1);   
+                DrawFormattedText(window, k, 1, 1, white, [], 1,[],1);
+                
             end
             
             labelGloss = 'Gloss';
             labelBump = 'Bumpiness';
-            DrawFormattedText(window, labelBump, bar_xPosition+500, (bar_yPosition-10), white,[],1,[],[]);
-            DrawFormattedText(window, labelGloss, bar_xPosition+500, (bar_yPosition+90), white,[],1,[],[]);
+            
+            DrawFormattedText(window, labelBump, bar_xPosition+650, (bar_yPosition-10), white,[],1,[],[]);
+            DrawFormattedText(window, labelGloss, bar_xPosition+650, (bar_yPosition+90), white,[],1,[],[]);
+            
+            DrawFormattedText(window, labelBump, (bar_xPosition+650)+2560, (bar_yPosition-10), white,[],1,[],[]);
+            DrawFormattedText(window, labelGloss, (bar_xPosition+650)+2560, (bar_yPosition+90), white,[],1,[],[]);
             
             % Get the current position of the mouse
             [mx, my, buttons] = GetMouse(window);
-
+            
             % Find the central position of the square
             [cx, cy] = RectCenter(bumpRect);
             [cx2, cy2] = RectCenter(glossRect);
-
+            
             % See if the mouse cursor is inside the square
             inside_gloss = IsInRect(mx, my, baseBarGloss);
             inside_bump = IsInRect(mx, my, baseBarBump);
@@ -283,10 +309,15 @@ try
             bumpRect = CenterRectOnPointd(InputDatastruct.const.selectRect, sx, bar_yPosition);
             glossRect = CenterRectOnPointd(InputDatastruct.const.selectRect, sx2, bar_yPosition+100);
             
+            bumpRectR = CenterRectOnPointd(InputDatastruct.const.selectRect, sx+2560, bar_yPosition);
+            glossRectR = CenterRectOnPointd(InputDatastruct.const.selectRect, sx2+2560, bar_yPosition+100);
+            
+            
             % Draw the rect to the screen
             Screen('FillRect', window, blue, bumpRect);
             Screen('FillRect', window, blue, glossRect);
-
+              Screen('FillRect', window, blue, bumpRectR);
+            Screen('FillRect', window, blue, glossRectR);
             
             % Draw a white dot where the mouse cursor is
              Screen('DrawDots', window, [2560-mx my], 10, white, [], 2);
@@ -330,9 +361,9 @@ try
         InputDatastruct.(datadir).data{trial,3} = char(InputDatastruct.(datadir).objname{trial});
         InputDatastruct.(datadir).data{trial,4} =  InputDatastruct.(datadir).objScene{trial};
         InputDatastruct.(datadir).data{trial,5} =  InputDatastruct.(datadir).objGlossLevel{trial};
-        InputDatastruct.(datadir).data{trial,6} = ((2560-glossLevelResp)-bar_xPosition)/60; %convert betw 0-100
+        InputDatastruct.(datadir).data{trial,6} = ((2560-glossLevelResp)-bar_xPosition)/50; %convert betw 0-100
         InputDatastruct.(datadir).data{trial,7} =  InputDatastruct.(datadir).objBumpLevel{trial};
-        InputDatastruct.(datadir).data{trial,8} = ((2560-bumpLevelResp)-bar_xPosition)/60;
+        InputDatastruct.(datadir).data{trial,8} = ((2560-bumpLevelResp)-bar_xPosition)/50;
 
         % Keep the current trial updated for if the subjects quit.
         InputDatastruct.(datadir).currenttrial=trial;
