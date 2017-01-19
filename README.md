@@ -21,7 +21,6 @@ The main file that drives the experiment is EXPMAIN.m.
 
 Still to do:
 
-1) Monocular block still reads in old stimuli.
-2) Run through as dummy participant.
+1) Run pilot
 
 
