@@ -211,7 +211,7 @@ try
         
         % Load the first stimulus file name based on the data in structure.
         stimfilename=char(InputDatastruct.(datadir).objname(trial)); 
-        imdata=load(char(stimfilename),'gammaCorrected8bit');
+        imdata=load(char(stimfilename));
         
         % Print trial and stimulus info to file
         trialtxt=num2str(trial);
@@ -224,11 +224,11 @@ try
 
             % make texture image out of image matrix.
             
-            tex=Screen('MakeTexture', window, imdata.gammaCorrected8bit);
+         tex=Screen('MakeTexture', window, fliplr(im2uint8(imdata.gammaCorrected)));
             
             % Draw
             Screen('DrawTexture', window, tex, [], [imRectL]);    
-            Screen('DrawTexture', window, tex, [], [imRectR]);
+%             Screen('DrawTexture', window, tex, [], [imRectR]);
             Screen('TextSize', window, InputDatastruct.const.textsize/2);
             
            Screen('TextSize', window, InputDatastruct.const.textsize/2);  
