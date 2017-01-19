@@ -305,6 +305,8 @@ try
 
             % Draw a white dot where the mouse cursor is
             Screen('DrawDots', window, [2560-mx my], 10, white, [], 2);
+            Screen('DrawDots', window, [(2560-mx)+2560 my], 10, white, [], 2);
+            
             
             [KeyIsDown, endrt, KeyCode]=KbCheck;
             if KeyCode(resp)
