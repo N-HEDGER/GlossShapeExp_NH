@@ -173,6 +173,10 @@ try
     [imRectL,dh,dv] = CenterRect([0 0 InputDatastruct.const.IM_WIDTH_DISP InputDatastruct.const.IM_HEIGHT_DISP], InputDatastruct.const.wRectL)
     [imRectR,dh,dv] = CenterRect([0 0 InputDatastruct.const.IM_WIDTH_DISP InputDatastruct.const.IM_HEIGHT_DISP], InputDatastruct.const.wRectR)
     
+    [noiserectL,dh,dv] = CenterRect([0 0 InputDatastruct.const.IM_WIDTH_DISP+InputDatastruct.const.noisesize InputDatastruct.const.IM_HEIGHT_DISP+InputDatastruct.const.noisesize], InputDatastruct.const.wRectL)
+    [noiserectR,dh,dv] = CenterRect([0 0 InputDatastruct.const.IM_WIDTH_DISP+InputDatastruct.const.noisesize InputDatastruct.const.IM_HEIGHT_DISP+InputDatastruct.const.noisesize], InputDatastruct.const.wRectR)
+    
+    
     % Define blue color
     blue = [0 0 255];
     
@@ -219,16 +223,25 @@ try
         log_txt=sprintf(formatSpec,trialtxt,stimtxt);
         fprintf(log_text_fid,'%s\n',log_txt);
         jRobot=java.awt.Robot;
+        noise = 255*rand([InputDatastruct.const.IM_HEIGHT_DISP+InputDatastruct.const.noisesize InputDatastruct.const.IM_WIDTH_DISP+InputDatastruct.const.noisesize]);
+        black=zeros(InputDatastruct.const.IM_HEIGHT_DISP,InputDatastruct.const.IM_HEIGHT_DISP);
  
         while 1 
 
             % make texture image out of image matrix.
             
-         tex=Screen('MakeTexture', window, fliplr(im2uint8(imdata.gammaCorrected)));
-            
+            tex=Screen('MakeTexture', window, fliplr(im2uint8(imdata.gammaCorrected)));
+            noisetex=Screen('MakeTexture', window, noise);
+            black=Screen('MakeTexture', window, black);
             % Draw
-            Screen('DrawTexture', window, tex, [], [imRectL]);    
-%             Screen('DrawTexture', window, tex, [], [imRectR]);
+            
+            Screen('DrawTexture', window, noisetex, [], [noiserectL]);
+            Screen('DrawTexture', window, noisetex, [], [noiserectR]);
+            Screen('DrawTexture', window, tex, [], [imRectL]);
+            Screen('DrawTexture', window, black, [], [imRectR]);
+            
+        
+            %             Screen('DrawTexture', window, tex, [], [imRectR]);
             Screen('TextSize', window, InputDatastruct.const.textsize/2);
             
            Screen('TextSize', window, InputDatastruct.const.textsize/2);  
