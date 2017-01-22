@@ -87,7 +87,7 @@ cd('../')
     InputDatastruct.const.wRectR = [(widthW/2)+1 0  widthW heightW];
     InputDatastruct.const.selectRect = [0 0 10 40];
     % Make a base rectangle for the slider bar
-    InputDatastruct.const.baseBar_xSize = 600;
+    InputDatastruct.const.baseBar_xSize = 720;
     InputDatastruct.const. baseBar_ySize = 10;
     InputDatastruct.const.textsize = 32;
 
@@ -259,8 +259,8 @@ try
             
             
             % add ticks to the bar.
-            vec=0:60:600;
-            for i=0:60:600
+            vec=0:60:720;
+            for i=0:60:720
                 
                 tick_offset = OffsetRect(tick, bar_xPosition+i-2, bar_yPosition-5);
                 Screen('FillRect', window, rectColor, tick_offset);
@@ -273,8 +273,8 @@ try
                 Screen('FillRect', window, rectColor, tick_offset2);
                  Screen('FillRect', window, rectColor, tick_offset2R);
                 % Write the number text
-                message = strcat(int2str((length(vec)-round(i/50)+1)));
-                message2 = strcat(num2str((length(vec)-round(i/50)+1)));
+              message = strcat(int2str((length(vec)-(i/60)-1)));
+                message2 = strcat(num2str((length(vec)-(i/60)-1)));
                 
                 
                 DrawFormattedText(window, message, bar_xPosition+i-4, (bar_yPosition+30), white, [], 1,[],[]);
@@ -375,9 +375,9 @@ try
         InputDatastruct.(datadir).data{trial,3} = char(InputDatastruct.(datadir).objname{trial});
         InputDatastruct.(datadir).data{trial,4} =  InputDatastruct.(datadir).objScene{trial};
         InputDatastruct.(datadir).data{trial,5} =  InputDatastruct.(datadir).objGlossLevel{trial};
-        InputDatastruct.(datadir).data{trial,6} = ((2560-glossLevelResp)-bar_xPosition)/50; %convert betw 0-100
+        InputDatastruct.(datadir).data{trial,6} = ((2560-glossLevelResp)-bar_xPosition)/60; %convert betw 0-100
         InputDatastruct.(datadir).data{trial,7} =  InputDatastruct.(datadir).objBumpLevel{trial};
-        InputDatastruct.(datadir).data{trial,8} = ((2560-bumpLevelResp)-bar_xPosition)/50;
+        InputDatastruct.(datadir).data{trial,8} = ((2560-bumpLevelResp)-bar_xPosition)/60;
 
         % Keep the current trial updated for if the subjects quit.
         InputDatastruct.(datadir).currenttrial=trial;
