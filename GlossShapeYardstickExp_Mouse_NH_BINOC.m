@@ -309,7 +309,7 @@ try
             
             
             [KeyIsDown, endrt, KeyCode]=KbCheck;
-            if KeyCode(resp)
+            if KeyCode(resp) && ismember(sx2,910:1640)  && ismember(sx,910:1640) 
                 glossLevelResp = sx2
                 bumpLevelResp = sx
                 break;
